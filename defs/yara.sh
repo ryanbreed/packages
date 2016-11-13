@@ -1,26 +1,32 @@
-export PACKAGE="libdvdcss"
-export PACKAGE_VERSION="1.4.0"
+export PACKAGE="yara"
+export PACKAGE_VERSION="3.5.0"
 export PACKAGE_ITERATION="0"
 export MAKEFLAGS="-j8 --silent"
 
-export git_url="http://code.videolan.org/videolan/libdvdcss.git"
+export git_url="https://github.com/VirusTotal/yara"
 
 function dependencies {
-  echo "NO DEPENDENCIES"
-  #cd "$ROOT_COMPILE/$PACKAGE"
-  #install_buildtime_dependencies openssl-devel
+  #echo "NO DEPENDENCIES"
+  cd "$ROOT_COMPILE/$PACKAGE"
+  install_buildtime_dependencies python-devel file-devel jansson-devel openssl-devel
 }
 
+     #--enable-cuckoo \
 function configure {
   cd "$ROOT_COMPILE/$PACKAGE"
   echo "configuring $PACKAGE"
-  autoreconf --install --force
+  ./bootstrap.sh
   ./configure \
-     --prefix=/opt/$PACKAGE \
      --exec-prefix=/usr \
      --libdir=/usr/lib64 \
      --includedir=/usr/include \
-     --datarootdir=/usr/share
+     --datarootdir=/usr/share \
+     --enable-magic \
+     --enable-dotnet
+  if [ $? -ne 0 ]; then
+    echo "configure failed" 
+    exit 1
+  fi
 }
 
 function install_root {
@@ -32,7 +38,6 @@ function compile {
 }
 
 function package {
-echo "NO PACKAGE"
   fpm -t rpm -s dir \
     -C $ROOT_INSTALL/$PACKAGE \
     -p $ARTIFACTS \
