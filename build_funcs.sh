@@ -1,14 +1,15 @@
 function download_archive {
   cd $PKG_HOME
   url="$1"
-  arc_file=$(basename $url)
+  arc_file="$2"
+  test -z "$arc_file" && arc_file=$(basename $url)
   arc_src=$( dirname $url )
 
   if [ -f "${DOWNLOAD}/${arc_file}" ]; then
     echo "$arc_file already cached in $DOWNLOAD"
   else
     echo "downloading $arc_file from $url"
-    cd $DOWNLOAD && curl -L -O --verbose "$url"
+    cd $DOWNLOAD && curl -L -s "$url" > $arc_file
   fi
 }
 
@@ -20,8 +21,11 @@ function download_git {
 function extract_archive {
   cd $PKG_HOME
   archive="$1"
+  dst_dir="$2"
+
+  test -z "$dst_dir" && dst_dir="$ROOT_COMPILE/$PACKAGE"
+
   arc_file=$(basename $archive)
-  dst_dir="$ROOT_COMPILE/$PACKAGE"
 
   if [ -d "$dst_dir" ]; then
      echo "cleaning $dst_dir"
@@ -48,6 +52,7 @@ function make_install_root {
   test -d "$ddir" || mkdir -vp "$ddir"
   echo "installing to $ddir"
   make install DESTDIR="$ddir"
+  test -d $ddir/opt/$PACKAGE/etc || mkdir -p $ddir/opt/$PACKAGE/etc
 }
 
 function package_dir {
