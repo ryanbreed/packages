@@ -1,6 +1,6 @@
-export PACKAGE="daq"
+export PACKAGE="daq2"
 export PACKAGE_VERSION="2.2.1"
-export PACKAGE_ITERATION="0"
+export PACKAGE_ITERATION="3"
 export MAKEFLAGS="-j8 --silent"
 export d_url="https://www.snort.org/downloads/snortplus/daq-2.2.1.tar.gz"
 export d_archive=$( basename $d_url )
@@ -34,5 +34,7 @@ function install_root {
 
 function package {
   echo "PACKAGE $PACKAGE"
-  package_dir
+  package_dir \
+    --depends openssl --depends luajit --depends libnfnetlink --depends libpcap --depends libdnet --depends hwloc-libs \
+    --provides daq
 }

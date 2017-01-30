@@ -1,0 +1,7 @@
+[yum-repo-ryanbreed]
+name=YUM Repo for Additional Packages
+baseurl=http://yum-repo-ryanbreed.s3-website-us-west-2.amazonaws.com/artifacts/7
+enabled=1
+gpgkey=http://yum-repo-ryanbreed.s3-website-us-west-2.amazonaws.com/RPM-GPG-KEY-yum-repo-ryanbreed
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-yum-repo-ryanbreed
+gpgcheck=1

@@ -1,6 +1,6 @@
 export PACKAGE="wireshark2"
 export PACKAGE_VERSION="2.2.4"
-export PACKAGE_ITERATION="1"
+export PACKAGE_ITERATION="2"
 export MAKEFLAGS="-j8 --silent"
 export d_url="https://2.na.dl.wireshark.org/src/wireshark-2.2.4.tar.bz2"
 export d_archive=$( basename $d_url )

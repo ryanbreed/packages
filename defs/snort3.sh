@@ -1,6 +1,6 @@
-export PACKAGE="snort"
+export PACKAGE="snort3"
 export PACKAGE_VERSION="3.0.0"
-export PACKAGE_ITERATION="0"
+export PACKAGE_ITERATION="3"
 export MAKEFLAGS="-j8 --silent"
 export d_url="https://www.snort.org/downloads/snortplus/snort-3.0.0-a4-223-auto.tar.gz"
 export d_archive=$( basename $d_url )
@@ -11,14 +11,14 @@ function download {
 }
 
 function dependencies {
-  install_buildtime_dependencies libcurl-devel openssl-devel luajit luajit-devel libnfnetlink-devel pcre pcre-devel libpcap-devel libdnet libdnet-devel hwloc-devel hwloc-libs hwloc
+  install_buildtime_dependencies libcurl-devel openssl-devel luajit luajit-devel libnfnetlink-devel pcre pcre-devel libpcap-devel libdnet libdnet-devel hwloc-devel hwloc-libs hwloc daq2
 }
 
 function configure {
   cd "$ROOT_COMPILE/$PACKAGE"
   echo "configuring $PACKAGE"
+     # --silent \
   ./configure \
-     --silent \
      --exec-prefix=/usr \
      --libdir=/usr/lib64 \
      --includedir=/usr/include \
@@ -35,5 +35,8 @@ function install_root {
 
 function package {
   echo "PACKAGE $PACKAGE"
-  package_dir
+  package_dir --depends daq2 --depends luajit --depends libnfnetlink \
+              --depends pcre --depends libpcap  --depends libdnet \
+              --depends hwloc-libs \
+              --provides snort --provides snort3
 }

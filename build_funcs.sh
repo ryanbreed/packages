@@ -45,7 +45,7 @@ function install_buildtime_dependencies {
 }
 
 function make_install_root {
-  cd "${COMPILE_ROOT}/${PACKAGE}"
+  cd "${ROOT_COMPILE}/${PACKAGE}"
   export ddir="${ROOT_INSTALL}/${PACKAGE}"
   echo "cleaning install root"
   rm -rvf "$ddir"
@@ -64,7 +64,9 @@ function package_dir {
     --iteration $PACKAGE_ITERATION \
     --provides "$PACKAGE" \
     --config-files opt/$PACKAGE/etc \
-    --inputs $PKG_HOME/mf/$PACKAGE.files
+    --inputs $PKG_HOME/mf/$PACKAGE.files \
+    --rpm-sign $*
+
     if [ $? -ne 0 ]; then
       exit 1
     fi

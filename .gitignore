@@ -2,3 +2,5 @@
 /mf/
 /log/
 /tmp/
+/**/*.private
+**/*.swp
