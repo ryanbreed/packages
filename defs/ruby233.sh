@@ -1,6 +1,6 @@
 export PACKAGE="ruby233"
 export PACKAGE_VERSION="2.3.3"
-export PACKAGE_ITERATION="0"
+export PACKAGE_ITERATION="2"
 export MAKEFLAGS="-j8 --silent"
 export d_url="http://cache.ruby-lang.org/pub/ruby/2.3/ruby-${PACKAGE_VERSION}.tar.gz"
 export d_archive=$( basename $d_url )
@@ -35,6 +35,7 @@ function package {
   echo "PACKAGE $PACKAGE"
   package_dir \
     --depends libcurl --depends openssl --depends readline --depends libyaml --depends yajl \
+    --depends gmp-devel \
     --provides ruby --provides ruby233  \
     --after-install hooks/${PACKAGE}/after-install.sh
 }

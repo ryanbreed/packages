@@ -1,12 +1,12 @@
 export PACKAGE="strongswan"
 export PACKAGE_VERSION="5.5.1"
-export PACKAGE_ITERATION="0"
+export PACKAGE_ITERATION="1"
 export MAKEFLAGS="-j8 --silent"
 export d_url="https://download.strongswan.org/strongswan-5.5.1.tar.gz"
 export d_archive=$( basename $d_url )
 
 function download {
-  download_archive $d_url
+  download_archive $d_url $d_archive
   extract_archive "$DOWNLOAD/$d_archive"
 }
 

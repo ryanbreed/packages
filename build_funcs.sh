@@ -58,7 +58,7 @@ function make_install_root {
 function package_dir {
   fpm -t rpm -s dir \
     -C $ROOT_INSTALL/$PACKAGE \
-    -p $ARTIFACTS \
+    -p $ARTIFACTS/7/x86_64 \
     -n $PACKAGE \
     --version $PACKAGE_VERSION \
     --iteration $PACKAGE_ITERATION \
