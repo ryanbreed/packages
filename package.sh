@@ -7,7 +7,8 @@ make_dirs
 for def in $*; do
   echo "building $def"
   source $def
-  echo "DEFINED PACKAGE $PACKAGE"
+  echo "PACKAGE SETUP:"
+  display_setup
   echo "download"
   download
   echo "build_install"
