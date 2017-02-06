@@ -1,5 +1,29 @@
-function download_archive {
+function target_compile {
+  echo "${ROOT_COMPILE}/${PACKAGE}"
+}
+
+function target_install {
+  echo "${ROOT_INSTALL}/${PACKAGE}"
+}
+
+function target_manifest {
+  echo "${MANIFESTS}/${PACKAGE}.files"
+}
+
+function go_home {
   cd $PKG_HOME
+} 
+
+function go_compile {
+  cd "$(target_compile)"
+}
+
+function go_install {
+  cd "$(target_install)"
+}
+
+function download_archive {
+  go_home
   url="$1"
   arc_file="$2"
   test -z "$arc_file" && arc_file=$(basename $url)
@@ -14,56 +38,58 @@ function download_archive {
 }
 
 function download_git {
-  rm -fr "$ROOT_COMPILE/$PACKAGE"
-  git clone $git_url "$ROOT_COMPILE/$PACKAGE"
+  rm -fr "$(target_compile)"
+  git_url="$1"
+  git_branch="$2"
+  if [[ -z "$git_branch" ]]; then
+    git_branch="master"
+  fi
+  git clone "$git_url" "$(target_compile)"
+  ( go_compile && git checkout "$git_branch")
 }
 
 function extract_archive {
-  cd $PKG_HOME
+  go_home
   archive="$1"
   dst_dir="$2"
 
-  test -z "$dst_dir" && dst_dir="$ROOT_COMPILE/$PACKAGE"
-
   arc_file=$(basename $archive)
 
-  if [ -d "$dst_dir" ]; then
-     echo "cleaning $dst_dir"
-     rm -vrf "$dst_dir/*"
+  if [ -d "$(target_compile)" ]; then
+     echo "cleaning $(target_compile)"
+     rm -vrf "$(target_compile)/*"
   else
-     echo "creating $dst_dir"
-     mkdir -v -p "$dst_dir"
+     echo "creating $(target_compile)"
+     mkdir -v -p "$(target_compile)"
   fi
-  echo "extracting $arc_file to $dst_dir"
-  tar xaf $archive -C "$dst_dir" --strip-components=1
+  echo "extracting $arc_file to $(target_compile)"
+  tar xaf $archive -C "$(target_compile)" --strip-components=1
 }
 
 function install_buildtime_dependencies {
-  cd $PKG_HOME
+  go_home
   echo "installing for build environment: $*"
   sudo yum -y install $*
 }
 
 function make_install_root {
-  cd "${ROOT_COMPILE}/${PACKAGE}"
-  export ddir="${ROOT_INSTALL}/${PACKAGE}"
+  go_compile
   echo "cleaning install root"
-  rm -rvf "$ddir"
-  test -d "$ddir" || mkdir -vp "$ddir"
-  echo "installing to $ddir"
-  make install DESTDIR="$ddir"
-  test -d $ddir/opt/$PACKAGE/etc || mkdir -p $ddir/opt/$PACKAGE/etc
+  rm -rvf "$(target_install)"
+  test -d "$(target_install)" || mkdir -vp "$(target_install)"
+  echo "installing to $(target_install)"
+  make install DESTDIR="$(target_install)"
 }
 
 function package_dir {
+  go_home
   fpm -t rpm -s dir \
-    -C $ROOT_INSTALL/$PACKAGE \
+    -C $(target_install) \
     -p $ARTIFACTS/7/x86_64 \
     -n $PACKAGE \
     --version $PACKAGE_VERSION \
     --iteration $PACKAGE_ITERATION \
     --provides "$PACKAGE" \
-    --config-files opt/$PACKAGE/etc \
     --inputs $PKG_HOME/mf/$PACKAGE.files \
     --rpm-sign $*
 
@@ -73,7 +99,7 @@ function package_dir {
 }
 
 function compile_make {
-  cd "${ROOT_COMPILE}/${PACKAGE}"
+  go_compile
   echo "compiling $PACKAGE"
   make
   if [ $? -eq 0 ]; then
@@ -85,9 +111,7 @@ function compile_make {
 }
 
 function build_package_manifest {
-  cd $PKG_HOME
-  ddir="${ROOT_INSTALL}/${PACKAGE}"
-  mf="${MANIFESTS}/${PACKAGE}.files"
-  rm -fv "$mf"
-  find "$ddir" -type f | sed -e "s#${ddir}/##" > "$mf"
+  go_home
+  rm -fv "$(target_manifest)"
+  find "$(target_install)" -type f | sed -e "s#$(target_install)/##" > "$(target_manifest)"
 }
