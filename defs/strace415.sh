@@ -2,7 +2,7 @@ if [[ -z "${PKG_HOME}" ]]; then
   source "build_vars.sh"
 fi
 
-export PACKAGE="strace"
+export PACKAGE="strace415"
 export PACKAGE_VERSION="4.15"
 export PACKAGE_ITERATION="0"
 export MAKEFLAGS="-j8 --silent"
