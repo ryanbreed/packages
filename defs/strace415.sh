@@ -30,20 +30,15 @@ function configure {
      --datarootdir=/usr/share \
      --program-suffix=415 \
      --prefix=/usr 
-  exit 0
 }
 
 function install_root {
   echo "INSTALL $PACKAGE"
-  exit 0
   make_install_root
-  test -d "${ROOT_INSTALL}/${PACKAGE_INSTALL_TARGET}/etc" || mkdir -p "${ROOT_INSTALL}/${PACKAGE_INSTALL_TARGET}/etc" 
 }
 
 function package {
   echo "PACKAGE $PACKAGE"
-  exit 0
   package_dir \
-    --depends gmp-devel \
     --provides strace
 }
