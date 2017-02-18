@@ -15,6 +15,7 @@ function make_dirs {
   test -d $ROOT_INSTALL || mkdir -v -p $ROOT_INSTALL
   test -d $ROOT_COMPILE || mkdir -v -p $ROOT_COMPILE
   test -d $DOWNLOAD || mkdir -v -p $DOWNLOAD
+  test -d $ARTIFACTS ||mkdir -v -p $ARTIFACTS/7/{x86_64,noarch}
 }
 
 function compile {
