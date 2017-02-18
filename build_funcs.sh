@@ -47,7 +47,6 @@ function download_git {
 
   if [[ -d $(target_compile) && -d "$(target_compile)/.git" ]]; then
     ( go_compile && git checkout $git_branch && git pull origin $git_branch )
-    ( go_compile && rm -vfr build )
   else
     rm -fr $(target_compile)
     git clone "$git_url" "$(target_compile)"
@@ -90,6 +89,11 @@ function make_install_root {
 
 function package_dir {
   go_home
+  if [[ -z "$PACKAGE_SIGN" || "$PACKAGE_SIGN" -eq "no" || "$PACKAGE_SIGN" -eq "false" ]]; then
+    export SIGN_FLAG=""
+  else
+    export SIGN_FLAG="--rpm-sign"
+  fi
   fpm -t rpm -s dir \
     -C $(target_install) \
     -p $ARTIFACTS/7/x86_64 \
@@ -98,7 +102,7 @@ function package_dir {
     --iteration $PACKAGE_ITERATION \
     --provides "$PACKAGE" \
     --inputs $PKG_HOME/mf/$PACKAGE.files \
-    --rpm-sign $*
+    $SIGN_FLAG $*
 
     if [ $? -ne 0 ]; then
       exit 1
