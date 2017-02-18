@@ -2,10 +2,10 @@ if [[ -z "${PKG_HOME}" ]]; then
   source "build_vars.sh"
 fi
 
-export PACKAGE="llvm-git"
+export PACKAGE="llvm5"
 export PACKAGE_VERSION="5.0"
 export PACKAGE_ITERATION="0"
-export MAKEFLAGS="-j8 --silent"
+export MAKEFLAGS="-j15 --silent"
 export git_url="http://llvm.org/git/llvm.git"
 export git_branch="master"
 
@@ -18,17 +18,17 @@ function dependencies {
 }
 
 function configure {
-  cd "$ROOT_COMPILE/$PACKAGE"
+  go_compile
   mkdir build
   cd build
-  cmake -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD="BPF;X86" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/var/tmp/build/rootfs/llvm-git/usr ..
+  cmake -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD="BPF;X86" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(target_install)/opt/${PACKAGE}" ..
   echo "configuring $PACKAGE"
 }
 
 function install_root {
   echo "INSTALL $PACKAGE"
   cd "$ROOT_COMPILE/$PACKAGE/build"
-  make -j8
+  make
   make install
 }
 

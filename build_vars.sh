@@ -1,8 +1,12 @@
 #!/bin/bash
+#
+# ALL THE OVERRIDES TO BE OVERRIDDEN
+# AKA CONFIG DEFAULTS
+#
 export ROOT_BUILD="/var/tmp/build"
-export ROOT_INSTALL="/var/tmp/build/rootfs"
-export ROOT_COMPILE="/var/tmp/build/compile"
-export DOWNLOAD="/var/tmp/build/cache"
+export ROOT_INSTALL="${ROOT_BUILD}/rootfs"
+export ROOT_COMPILE="${ROOT_BUILD}/compile"
+export DOWNLOAD="${ROOT_BUILD}/cache"
 
 export PKG_HOME="$PWD"
 export ARTIFACTS="$PKG_HOME/artifacts"

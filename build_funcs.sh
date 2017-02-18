@@ -38,14 +38,21 @@ function download_archive {
 }
 
 function download_git {
-  rm -fr "$(target_compile)"
   git_url="$1"
   git_branch="$2"
+
   if [[ -z "$git_branch" ]]; then
     git_branch="master"
   fi
-  git clone "$git_url" "$(target_compile)"
-  ( go_compile && git checkout "$git_branch")
+
+  if [[ -d $(target_compile) && -d "$(target_compile)/.git" ]]; then
+    ( go_compile && git checkout $git_branch && git pull origin $git_branch )
+    ( go_compile && rm -vfr build )
+  else
+    rm -fr $(target_compile)
+    git clone "$git_url" "$(target_compile)"
+    ( go_compile && git checkout "$git_branch")
+  fi
 }
 
 function extract_archive {
